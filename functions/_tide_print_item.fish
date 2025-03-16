@@ -20,7 +20,13 @@ function _tide_print_item -a item
 
     v=tide_"$item"_color set_color $$v -b $item_bg_color
 
-    echo -ns $_tide_pad $argv[2..] $_tide_pad
+    set seq (echo -ns $_tide_pad $argv[2..] $_tide_pad)
+
+    v=tide_"$item"_bg_color_enforced if set -q $v && $$v = true
+        set seq (string replace -a -r '\e\[[0-9;]+m' '$0'$(set_color --background $item_bg_color) $seq)
+    end
+
+    echo -ns $seq
 
     set -g prev_bg_color $item_bg_color
 end
